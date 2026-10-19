@@ -17,6 +17,7 @@
   if (!COPY[lang]) lang = 'uk';
   let tab = 0, triggers = [], ctxs = [];
 
+  const A = n => (window.IMG && window.IMG[n]) || ('assets/' + (n === 'logo-hd' ? 'logo' : n) + '.jpg');
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const words = (t, cls) => String(t).split(/\s+/).map(w => `<span class="w"><span${cls ? ` class="${cls}"` : ''}>${esc(w)}</span></span>`).join(' ');
   const iwords = t => String(t).split(/\s+/).map(w => `<span class="iw">${esc(w)}</span>`).join(' ');
@@ -42,11 +43,12 @@
   }
   function render() {
     const t = COPY[lang], u = UI[lang], S = t.sections;
-    const imgs = ['assets/contracts.jpg', 'assets/handshake.jpg', 'assets/dusk.jpg'];
+    const imgs = [A('contracts'), A('handshake'), A('dusk')];
+    const heroMedia = (window.IMG && !window.TOHA_VIDEO) ? `<img class="kb" src="${A('hero-poster')}" alt="">` : `<video autoplay muted loop playsinline preload="auto" poster="${A('hero-poster')}"><source src="${window.TOHA_VIDEO || 'assets/hero.mp4'}" type="video/mp4"></video>`;
     const dir = i => `<span>${esc(t.nav[i])}</span>`;
     root.innerHTML = `
     <header class="nav" id="nav">
-      <a class="brand" href="#top" aria-label="Toha Target Group"><img src="assets/logo.jpg" alt="" width="34" height="34"><span>${u.brand[0]}<br>${u.brand[1]}</span></a>
+      <a class="brand" href="#top" aria-label="Toha Target Group"><img src="${A('logo')}" alt="" width="40" height="40"><span class="wm"><b>TOHA</b><small>TARGET GROUP</small></span></a>
       <nav aria-label="Menu"><a href="#about">${esc(t.about.nav)}</a><a href="#services">${esc(t.nav[0])}</a><a href="#process">${esc(t.nav[1])}</a><a href="#forms">${esc(t.nav[2])}</a></nav>
       <div class="tools">
         <div class="lang" aria-label="Language">${['uk', 'ru', 'en'].map((l, i) => `${i ? '<i>|</i>' : ''}<button type="button" data-lang="${l}" aria-pressed="${l === lang}">${l === 'uk' ? 'UA' : l.toUpperCase()}</button>`).join('')}</div>
@@ -68,8 +70,9 @@
     </header>
     <main>
       <section class="hero" id="top">
-        <div class="hero-media"><video autoplay muted loop playsinline preload="auto" poster="assets/hero-poster.jpg"><source src="assets/hero.mp4" type="video/mp4"></video><div class="hero-shade"></div></div>
+        <div class="hero-media">${heroMedia}<div class="hero-shade"></div></div>
         <div class="hero-inner">
+          <div class="hero-brand" data-hero><b>TOHA</b><small>TARGET GROUP</small></div>
           <p class="eyebrow" data-hero>${esc(t.title)}</p>
           <h1 data-hero-h1>${t.tagline.split(' ').map((w, i, a) => `<span class="w"><span>${i === a.length - 1 ? `<em>${esc(w)}.</em>` : esc(w)}</span></span>`).join(' ')}</h1>
           <p class="lead" data-hero>${esc(t.intro)}</p>
@@ -80,7 +83,7 @@
       </section>
 
       <section class="showcase" id="showcase">
-        <div class="show-card"><img class="img-night" src="assets/mecca-night.jpg" alt=""><img class="img-day" src="assets/london-day.jpg" alt=""></div>
+        <div class="show-card"><img class="img-night" src="${A('mecca-night')}" alt=""><img class="img-day" src="${A('london-day')}" alt=""></div>
         <div class="show-text"><h2><span class="l1">${words(t.image[0])}</span><span class="l2">${words(t.image[1])}</span></h2></div>
         <div class="sectors">${t.sectors.map(s => `<span>${esc(s)}</span>`).join('')}</div>
       </section>
@@ -90,6 +93,13 @@
         <div class="col-r">${t.about.paragraphs.map(p => `<p data-reveal>${esc(p)}</p>`).join('')}</div></div>
         <p class="invite">${iwords(t.about.cta)}</p>
       </div></section>
+
+      <section class="brand-sec" id="brand" aria-label="TOHA Target Group">
+        <div class="wrap brand-in">
+          <div class="logo-card" data-logo><img src="${A('logo-hd')}" alt="TOHA Target Group" loading="lazy"></div>
+          <div class="giant" data-giant aria-hidden="true">${'TOHA'.split('').map(c => `<span>${c}</span>`).join('')}</div>
+          <p class="giant-sub" data-reveal>TARGET GROUP · ${esc(t.tagline)}</p>
+        </div></section>
 
       <section class="pad" id="services"><div class="wrap">
         <div class="head"><p class="eyebrow" data-reveal>${esc(S[0])}</p><h2 class="h2" data-reveal>${esc(t.serviceHead)}</h2><p class="lead" data-reveal>${esc(t.serviceIntro)}</p></div>
@@ -116,7 +126,7 @@
       </div></section>
     </main>
     <footer id="contact"><div class="wrap">
-      <img class="logo" src="assets/logo.jpg" alt="Toha Target Group" width="88" height="88">
+      <img class="logo" src="${A('logo-hd')}" alt="Toha Target Group" width="180" height="180">
       <h2 data-reveal>${esc(t.tagline)}.</h2>
       <div class="cta" data-reveal><a class="btn solid" style="width:auto" href="#forms" data-tab="0">${esc(t.employer)}</a><a class="btn ghost" href="#forms" data-tab="1">${esc(t.candidate)}</a></div>
       <div class="links"><a href="tel:${TEL}">${PHONE}</a><a href="mailto:${MAIL}">Email</a><a href="https://t.me/${TEL}" target="_blank" rel="noopener">Telegram</a><a href="https://wa.me/${TEL.slice(1)}" target="_blank" rel="noopener">WhatsApp</a><a href="viber://chat?number=${TEL.slice(1)}">Viber</a><a href="${IG}" target="_blank" rel="noopener">Instagram</a></div>
@@ -231,7 +241,7 @@
 
     // Hero: пин, зум видео, въезд сквозь корону
     const heroTl = gsap.timeline({ scrollTrigger: { trigger: '.hero', start: 'top top', end: '+=140%', scrub: .8, pin: true, anticipatePin: 1 } });
-    heroTl.to('.hero-media video', { scale: 1.35, ease: 'none' }, 0)
+    heroTl.to('.hero-media video, .hero-media img', { scale: 1.35, ease: 'none' }, 0)
       .to('.hero-shade', { opacity: 1.0, ease: 'none' }, 0)
       .to('.hero-inner', { yPercent: -18, opacity: 0, ease: 'power1.in', duration: .55 }, 0)
       .to('.scroll-cue', { opacity: 0, duration: .15 }, 0);
@@ -278,6 +288,15 @@
     // Шаги процесса: предыдущие уходят вглубь
     const steps = $$('.step');
     steps.forEach((s, i) => { if (steps[i + 1]) gsap.to(s, { scale: .93, opacity: .45, ease: 'none', scrollTrigger: { trigger: steps[i + 1], start: 'top 75%', end: 'top 25%', scrub: true } }); });
+
+
+    // Бренд: логотип выезжает, буквы TOHA появляются по очереди
+    if ($('.brand-sec')) {
+      gsap.fromTo('.logo-card', { scale: .72, rotate: -6, y: 120, opacity: 0 }, { scale: 1, rotate: 0, y: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: '.brand-sec', start: 'top 85%', end: 'top 25%', scrub: 1 } });
+      gsap.fromTo('.logo-card', { yPercent: 0 }, { yPercent: -18, ease: 'none', scrollTrigger: { trigger: '.brand-sec', start: 'top 25%', end: 'bottom top', scrub: 1 } });
+      gsap.from('.giant span', { yPercent: 120, opacity: 0, rotateX: -60, stagger: .12, duration: 1.4, ease: 'expo.out', transformPerspective: 900, scrollTrigger: { trigger: '.giant', start: 'top 85%', once: true } });
+      gsap.fromTo('.giant', { scale: 1.12 }, { scale: .92, ease: 'none', scrollTrigger: { trigger: '.brand-sec', start: 'top bottom', end: 'bottom top', scrub: true } });
+    }
 
     // Подвал: логотип
     gsap.from('footer .logo', { scale: .4, opacity: 0, rotate: -40, duration: 1.4, ease: 'expo.out', scrollTrigger: { trigger: 'footer', start: 'top 80%', once: true } });

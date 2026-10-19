@@ -53,8 +53,10 @@ header.nav { animation: navin 1.1s var(--ease-out) .3s backwards; }
 @keyframes navin { from { transform: translateY(-100%); } }
 header.nav.hide { transform: translateY(-100%); }
 .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
-.brand img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background: #fff; }
-.brand span { font-size: 11px; line-height: 1.15; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text); }
+.brand img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #fff; }
+.brand .wm { display: flex; flex-direction: column; line-height: 1; }
+.brand .wm b { font-size: 24px; font-weight: 700; letter-spacing: .2em; background: linear-gradient(100deg, var(--accent), var(--text) 70%); -webkit-background-clip: text; background-clip: text; color: transparent; padding-left: .1em; }
+.brand .wm small { margin-top: 4px; font-size: 9px; font-weight: 600; letter-spacing: .34em; color: var(--text-2); text-transform: uppercase; padding-left: .1em; }
 .nav nav { display: flex; gap: 30px; font-size: 13px; color: var(--text-2); }
 .nav nav a { transition: color .3s; }
 .nav nav a:hover { color: var(--text); }
@@ -238,7 +240,7 @@ textarea { resize: vertical; min-height: 96px; }
 
 /* ---------- Footer ---------- */
 footer { padding: clamp(80px, 12vw, 160px) 0 40px; text-align: center; }
-footer .logo { width: 88px; height: 88px; border-radius: 50%; margin: 0 auto 26px; background: #fff; object-fit: cover; box-shadow: 0 20px 60px rgba(0, 0, 0, .25); }
+footer .logo { width: clamp(120px, 16vw, 180px); height: clamp(120px, 16vw, 180px); border-radius: 50%; margin: 0 auto 26px; background: #fff; object-fit: cover; box-shadow: 0 20px 60px rgba(0, 0, 0, .25); }
 footer h2 { font-size: clamp(38px, 7vw, 100px); line-height: 1; letter-spacing: -.04em; font-weight: 700; text-wrap: balance; }
 footer .cta { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin: 38px 0 60px; }
 footer .btn.ghost { color: var(--text); background: var(--field); border-color: var(--line); }
@@ -258,7 +260,7 @@ footer .btn.ghost { color: var(--text); background: var(--field); border-color: 
   .step { grid-template-columns: 1fr; min-height: 0; } .step .big { font-size: 90px; }
 }
 @media (max-width: 640px) {
-  .brand span { display: none; }
+  .brand .wm small { display: none; } .brand .wm b { font-size: 20px; } .tools { gap: 2px; }
   form { grid-template-columns: 1fr; }
   .show-card { clip-path: inset(20% 8% round 28px); }
   .faq .ans p { padding-right: 0; }
@@ -269,3 +271,21 @@ footer .btn.ghost { color: var(--text); background: var(--field); border-color: 
   [data-reveal] { opacity: 1; transform: none; filter: none; }
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* ---------- Brand ---------- */
+.hero-brand { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+.hero-brand b { font-size: clamp(40px, 6vw, 76px); font-weight: 700; letter-spacing: .22em; line-height: 1; background: linear-gradient(100deg, #f6dfa4, #c9974a 60%, #f6dfa4); -webkit-background-clip: text; background-clip: text; color: transparent; padding-left: .05em; }
+.hero-brand small { font-size: clamp(11px, 1.2vw, 15px); font-weight: 600; letter-spacing: .42em; color: rgba(255, 255, 255, .75); }
+.brand-sec { padding: clamp(80px, 12vw, 170px) 0 clamp(40px, 6vw, 90px); overflow: hidden; }
+.brand-in { text-align: center; }
+.logo-card {
+  width: min(520px, 78vw); aspect-ratio: 1; margin: 0 auto; border-radius: 56px; overflow: hidden; background: #fff;
+  box-shadow: 0 60px 140px rgba(0, 0, 0, .45), 0 0 0 1px rgba(255, 255, 255, .08), 0 0 160px rgba(227, 194, 125, .22); position: relative; z-index: 1;
+}
+.logo-card img { width: 100%; height: 100%; object-fit: cover; }
+.giant {
+  display: flex; justify-content: center; margin-top: clamp(-120px, -9vw, -40px); position: relative; z-index: 2; perspective: 900px;
+  font-size: clamp(110px, 27vw, 430px); font-weight: 700; line-height: .9; letter-spacing: -.045em; mix-blend-mode: normal;
+}
+.giant span { display: inline-block; background: linear-gradient(180deg, var(--text) 10%, var(--accent) 120%); -webkit-background-clip: text; background-clip: text; color: transparent; padding: 0 .02em; filter: drop-shadow(0 20px 40px rgba(0, 0, 0, .25)); }
+.giant-sub { margin-top: 18px; font-size: clamp(12px, 1.4vw, 18px); font-weight: 600; letter-spacing: .42em; text-transform: uppercase; color: var(--text-2); }

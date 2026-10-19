@@ -1,7 +1,7 @@
 /* 3D-корона из логотипа (замена «черепа» из референса): летит сквозь страницу вместе со скроллом */
 (function () {
   const canvas = document.getElementById('crown');
-  const state = { x: .55, y: -.05, z: 0, rx: .12, ry: .5, rz: 0, s: 1, o: 1 }; // x,y — доли полуширины/полувысоты экрана
+  const state = { x: .72, y: -.1, z: 0, rx: .12, ry: .5, rz: 0, s: 1, o: 1 }; // x,y — доли полуширины/полувысоты экрана
   const api = { state, ready: false };
   window.Crown = api;
   if (!window.THREE) return;
@@ -74,6 +74,26 @@
     const gem = new THREE.Mesh(new THREE.OctahedronGeometry(.075, 0), ruby);
     gem.scale.y = 1.4; const a2 = a, g = new THREE.Vector3(Math.cos(a2) * (R + .07), .27, Math.sin(a2) * (R + .07)); gem.position.copy(g); gem.lookAt(g.x * 2, g.y, g.z * 2); crown.add(gem);
   }
+
+  // надпись TOHA на каждом зубце-«впадине» короны (шрифт как в логотипе)
+  (function () {
+    const cv = document.createElement('canvas'); cv.width = 1024; cv.height = 256;
+    const g = cv.getContext('2d');
+    const grad = g.createLinearGradient(0, 40, 0, 216); grad.addColorStop(0, '#fff0c2'); grad.addColorStop(.5, '#e2b45e'); grad.addColorStop(1, '#a87a2c');
+    g.fillStyle = grad; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.font = '700 190px "Times New Roman", Georgia, serif';
+    if ('letterSpacing' in g) g.letterSpacing = '26px';
+    g.fillText('TOHA', 512 + 13, 136);
+    const tex = new THREE.CanvasTexture(cv); tex.encoding = THREE.sRGBEncoding; tex.anisotropy = 8;
+    const label = new THREE.MeshBasicMaterial({ map: tex, transparent: true, side: THREE.DoubleSide, toneMapped: false, depthWrite: false });
+    label.userData.keepT = true; mats.push(label);
+    const span = Math.PI * 2 / SPIKES * .8;
+    for (let k = 0; k < SPIKES; k++) {
+      const a = k / SPIKES * Math.PI * 2;               // середина «впадины» между зубцами
+      const m = new THREE.Mesh(new THREE.CylinderGeometry(R + .075, R + .075, .26, 48, 1, true, Math.PI / 2 - a - span / 2, span), label);
+      m.position.y = .26; crown.add(m);
+    }
+  })();
   crown.position.y = -.6;
   const holder = new THREE.Group(); holder.add(crown); scene.add(holder);
 
@@ -112,7 +132,7 @@
     holder.rotation.set(state.rx + mouse.y * .08, state.ry + idle, state.rz);
     holder.scale.setScalar(s);
     const o = THREE.MathUtils.clamp(state.o, 0, 1) * (camera.aspect < 1 ? .3 + .7 * fly : 1);
-    mats.forEach(m => { m.opacity = o; m.transparent = o < .995; m.depthWrite = true; });
+    mats.forEach(m => { m.opacity = o; m.transparent = !!m.userData.keepT || o < .995; m.depthWrite = true; });
     holder.visible = o > .003;
     renderer.render(scene, camera);
   }
