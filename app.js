@@ -5,9 +5,9 @@
   const PHONE = '+38 (097) 097-56-57', TEL = '+380970975657', MAIL = 'toxa_target.group@ukr.net';
   const IG = 'https://www.instagram.com/toha.target.group/';
   const UI = {
-    uk: { theme: 'Змінити тему', music: 'Музика', musicHint: 'Увімкнути музику', cities: 'Київ · Одеса', viber: 'Viber', viberHint: 'Якщо чат не відкрився, додайте номер у Viber', brand: ['INTERNATIONAL RECRUITMENT', 'AND WORK FOR SOLUTION'], rights: 'Усі права захищено', demo: 'Демо-режим: заявка збережена локально в браузері.' },
-    ru: { theme: 'Сменить тему', music: 'Музыка', musicHint: 'Включить музыку', cities: 'Киев · Одесса', viber: 'Viber', viberHint: 'Если чат не открылся, добавьте номер в Viber', brand: ['INTERNATIONAL RECRUITMENT', 'AND WORK FOR SOLUTION'], rights: 'Все права защищены', demo: 'Демо-режим: заявка сохранена локально в браузере.' },
-    en: { theme: 'Toggle theme', music: 'Music', musicHint: 'Turn on music', cities: 'Kyiv · Odesa', viber: 'Viber', viberHint: 'If the chat did not open, add the number in Viber', brand: ['INTERNATIONAL RECRUITMENT', 'AND WORK FOR SOLUTION'], rights: 'All rights reserved', demo: 'Demo mode: the application is saved locally in your browser.' }
+    uk: { theme: 'Змінити тему', music: 'Музика', musicHint: 'Увімкнути музику', cities: 'Київ · Одеса', viber: 'Viber', viberHint: 'Якщо чат не відкрився, додайте номер у Viber', brand: ['INTERNATIONAL RECRUITMENT', 'AND WORK FOR SOLUTION'], rights: 'Усі права захищено', frost: 'Проведіть, щоб розчистити іній', demo: 'Демо-режим: заявка збережена локально в браузері.' },
+    ru: { theme: 'Сменить тему', music: 'Музыка', musicHint: 'Включить музыку', cities: 'Киев · Одесса', viber: 'Viber', viberHint: 'Если чат не открылся, добавьте номер в Viber', brand: ['INTERNATIONAL RECRUITMENT', 'AND WORK FOR SOLUTION'], rights: 'Все права защищены', frost: 'Проведите, чтобы расчистить иней', demo: 'Демо-режим: заявка сохранена локально в браузере.' },
+    en: { theme: 'Toggle theme', music: 'Music', musicHint: 'Turn on music', cities: 'Kyiv · Odesa', viber: 'Viber', viberHint: 'If the chat did not open, add the number in Viber', brand: ['INTERNATIONAL RECRUITMENT', 'AND WORK FOR SOLUTION'], rights: 'All rights reserved', frost: 'Wipe to clear the frost', demo: 'Demo mode: the application is saved locally in your browser.' }
   };
   const EMP = ['country', 'company', 'person', 'phone', 'messengers', 'email', 'role', 'count', 'location', 'start', 'comment'];
   const CAN = ['name', 'citizenship', 'residence', 'age', 'profession', 'experience', 'destination', 'languages', 'documents', 'phone', 'candidateMessengers', 'cv'];
@@ -70,7 +70,7 @@
     </header>
     <main>
       <section class="hero" id="top">
-        <div class="hero-media">${heroMedia}<div class="hero-shade"></div></div>
+        <div class="hero-media">${heroMedia}<canvas class="frost" aria-hidden="true"></canvas><div class="hero-shade"></div></div>
         <div class="hero-inner">
           <div class="hero-brand" data-hero><b>TOHA</b><small>TARGET GROUP</small></div>
           <p class="eyebrow" data-hero>${esc(t.title)}</p>
@@ -79,6 +79,7 @@
           <div class="cta" data-hero><a class="btn primary" href="#forms" data-tab="0">${esc(t.employer)}</a><a class="btn ghost" href="#forms" data-tab="1">${esc(t.candidate)}</a></div>
           <p class="note" data-hero>${esc(t.note)}</p>
         </div>
+        <div class="frost-hint" aria-hidden="true"><i></i>${esc(u.frost)}</div>
         <div class="scroll-cue" aria-hidden="true"></div>
       </section>
 
@@ -103,8 +104,12 @@
 
       <section class="pad" id="services"><div class="wrap">
         <div class="head"><p class="eyebrow" data-reveal>${esc(S[0])}</p><h2 class="h2" data-reveal>${esc(t.serviceHead)}</h2><p class="lead" data-reveal>${esc(t.serviceIntro)}</p></div>
-        <div class="cards">${t.services.map((s, i) => `<article class="card" data-card><img src="${imgs[i]}" alt="" loading="lazy"><span class="num">0${i + 1}</span><h3>${esc(s[0])}</h3><p>${esc(s[1])}</p><span class="tag">${esc(s[2])}</span></article>`).join('')}</div>
-      </div></section>
+
+      </div>
+        <div class="cards-stage"><div class="cards">${[0, 2, 1].map((si, pos) => { const s = t.services[si]; return `<article class="card ${pos === 1 ? 'is-center' : ''}" data-card><img src="${imgs[si]}" alt="" loading="lazy"><span class="num">0${pos + 1}</span><h3>${esc(s[0])}</h3><p>${esc(s[1])}</p><span class="tag">${esc(s[2])}</span></article>`; }).join('')}</div>
+          ${[0, 2, 1].map(si => { const s = t.services[si]; return `<div class="zoom-cap" aria-hidden="true"><h3>${esc(s[0])}</h3><p>${esc(s[1])}</p><span class="tag">${esc(s[2])}</span></div>`; }).join('')}
+        </div>
+      </section>
 
       <section class="pad" id="process"><div class="wrap">
         <div class="head"><p class="eyebrow" data-reveal>${esc(S[1])}</p><h2 class="h2" data-reveal>${esc(t.processHead)}</h2><p class="lead" data-reveal>${esc(t.processIntro)}</p></div>
@@ -241,7 +246,7 @@
 
     // Hero: пин, зум видео, въезд сквозь корону
     const heroTl = gsap.timeline({ scrollTrigger: { trigger: '.hero', start: 'top top', end: '+=140%', scrub: .8, pin: true, anticipatePin: 1 } });
-    heroTl.to('.hero-media video, .hero-media img', { scale: 1.35, ease: 'none' }, 0)
+    heroTl.to('.hero-media video, .hero-media img, .hero-media canvas', { scale: 1.35, ease: 'none' }, 0)
       .to('.hero-shade', { opacity: 1.0, ease: 'none' }, 0)
       .to('.hero-inner', { yPercent: -18, opacity: 0, ease: 'power1.in', duration: .55 }, 0)
       .to('.scroll-cue', { opacity: 0, duration: .15 }, 0);
@@ -300,15 +305,31 @@
     // Фраза-приглашение: слова загораются по скроллу
     gsap.to('.invite .iw', { opacity: 1, ease: 'none', stagger: .12, scrollTrigger: { trigger: '.invite', start: 'top 80%', end: 'bottom 45%', scrub: true } });
 
-    // Карточки: въезд с глубиной + наклон
-    $$('[data-card]').forEach((c, i) => {
-      gsap.from(c, { y: 120, rotateX: 14, scale: .92, opacity: 0, transformPerspective: 1100, duration: 1.4, ease: 'expo.out', delay: (i % 3) * .08, scrollTrigger: { trigger: c, start: 'top 92%', once: true } });
-      gsap.fromTo(c.querySelector('img'), { yPercent: -6 }, { yPercent: 6, ease: 'none', scrollTrigger: { trigger: c, start: 'top bottom', end: 'bottom top', scrub: true } });
-      if (!matchMedia('(hover: none)').matches) {
-        c.addEventListener('pointermove', e => { const r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; gsap.to(c, { rotateY: x * 9, rotateX: -y * 9, transformPerspective: 1100, duration: .6, ease: 'power3.out', overwrite: 'auto' }); });
-        c.addEventListener('pointerleave', () => gsap.to(c, { rotateY: 0, rotateX: 0, duration: 1, ease: 'elastic.out(1,.6)', overwrite: 'auto' }));
-      }
-    });
+    // Карточки услуг: одна за другой разворачиваются на весь экран и накрывают предыдущую («входим внутрь»)
+    const stage = $('.cards-stage');
+    if (stage) {
+      const cards = $$('.cards-stage .card'), caps = $$('.zoom-cap');
+      gsap.set(cards, { zIndex: 1 });
+      gsap.from(cards, { y: 90, stagger: .08, ease: 'none', scrollTrigger: { trigger: stage, start: 'top 90%', end: 'top 20%', scrub: true } });
+      const fit = c => () => Math.max(innerWidth / c.offsetWidth, innerHeight / c.offsetHeight) * 1.06;
+      const dx = c => () => { const r = c.getBoundingClientRect(), s = stage.getBoundingClientRect(); return gsap.getProperty(c, 'x') + (s.left + s.width / 2) - (r.left + r.width / 2); };
+      const dy = c => () => { const r = c.getBoundingClientRect(), s = stage.getBoundingClientRect(); return gsap.getProperty(c, 'y') + (s.top + s.height / 2) - (r.top + r.height / 2); };
+      const ztl = gsap.timeline({ scrollTrigger: { trigger: stage, start: 'top top', end: '+=460%', scrub: .8, pin: true, anticipatePin: 1, invalidateOnRefresh: true } });
+      // порядок показа: мечеть (центр) — первая и дольше всех, затем левая, затем правая
+      const seq = [{ k: 1, d: 2.1 }, { k: 0, d: 1 }, { k: 2, d: 1 }];
+      let t0 = 0;
+      seq.forEach((s, n) => {
+        const c = cards[s.k];
+        ztl.set(c, { zIndex: 10 + n }, t0)
+          .to(c.querySelectorAll('.num, h3, p, .tag'), { opacity: 0, duration: .15, ease: 'none' }, t0)
+          .to(c, { x: dx(c), y: dy(c), scale: fit(c), ease: 'power2.inOut', duration: .6 }, t0)
+          .to(c.querySelector('img'), { scale: s.d > 1.5 ? 1.75 : 1.5, ease: 'none', duration: s.d }, t0)
+          .fromTo(caps[s.k], { opacity: 0, y: 50, scale: .92 }, { opacity: 1, y: 0, scale: 1, ease: 'power3.out', duration: .25 }, t0 + .52);
+        if (n < seq.length - 1) ztl.to(caps[s.k], { opacity: 0, y: -40, ease: 'power2.in', duration: .14 }, t0 + s.d - .16);
+        t0 += s.d;
+      });
+      ztl.to({}, { duration: .3 });
+    }
 
     // Шаги процесса: предыдущие уходят вглубь
     const steps = $$('.step');
@@ -319,8 +340,74 @@
     gsap.from('footer .logo', { scale: .4, opacity: 0, rotate: -40, duration: 1.4, ease: 'expo.out', scrollTrigger: { trigger: 'footer', start: 'top 80%', once: true } });
   }
 
+  /* ---------------- иней на первом экране: мышкой/пальцем расчищаем ---------------- */
+  let frostRAF = 0, frostCleanup = null;
+  function initFrost() {
+    if (frostCleanup) frostCleanup();
+    const hero = root.querySelector('.hero'), cv = root.querySelector('.frost'); if (!hero || !cv) return;
+    const src = hero.querySelector('.hero-media video, .hero-media img'), hint = hero.querySelector('.frost-hint');
+    const ctx = cv.getContext('2d'), tiny = document.createElement('canvas'), tctx = tiny.getContext('2d');
+    const mask = document.createElement('canvas'), mctx = mask.getContext('2d');
+    const noise = document.createElement('canvas'); noise.width = noise.height = 256; const nctx = noise.getContext('2d');
+    // кристаллическая «зернистость» инея
+    const img = nctx.createImageData(256, 256);
+    for (let i = 0; i < img.data.length; i += 4) { const v = Math.random(), s = v > .93 ? 255 : 180 + Math.random() * 60; img.data[i] = img.data[i + 1] = s; img.data[i + 2] = 255; img.data[i + 3] = v > .93 ? 230 : Math.random() * 90; }
+    nctx.putImageData(img, 0, 0);
+    nctx.strokeStyle = 'rgba(255,255,255,.35)'; nctx.lineWidth = .8;
+    for (let i = 0; i < 40; i++) { const x = Math.random() * 256, y = Math.random() * 256, l = 6 + Math.random() * 18, an = Math.random() * Math.PI; nctx.beginPath(); nctx.moveTo(x, y); nctx.lineTo(x + Math.cos(an) * l, y + Math.sin(an) * l); nctx.stroke(); }
+    const pattern = ctx.createPattern(noise, 'repeat');
+    let W = 0, H = 0, frame = 0, cleared = false, last = null, alive = true;
+    function size() {
+      const k = Math.min(1, 960 / hero.clientWidth); W = cv.width = Math.round(hero.clientWidth * k); H = cv.height = Math.round(hero.clientHeight * k);
+      mask.width = W; mask.height = H; mctx.fillStyle = '#000'; mctx.fillRect(0, 0, W, H); tiny.width = 64; tiny.height = Math.max(36, Math.round(64 * H / W));
+    }
+    size();
+    function wipe(x, y, auto) {
+      const r = cv.getBoundingClientRect(), px = (x - r.left) / r.width * W, py = (y - r.top) / r.height * H, rad = Math.max(60, W * .11);
+      const steps = last ? Math.max(1, Math.ceil(Math.hypot(px - last.x, py - last.y) / (rad * .35))) : 1;
+      mctx.globalCompositeOperation = 'destination-out';
+      for (let i = 1; i <= steps; i++) {
+        const cx = last ? last.x + (px - last.x) * i / steps : px, cy = last ? last.y + (py - last.y) * i / steps : py;
+        const g = mctx.createRadialGradient(cx, cy, rad * .15, cx, cy, rad); g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(.6, 'rgba(0,0,0,.7)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+        mctx.fillStyle = g; mctx.beginPath(); mctx.arc(cx, cy, rad, 0, 6.2832); mctx.fill();
+      }
+      mctx.globalCompositeOperation = 'source-over'; last = { x: px, y: py };
+      if (!auto && !cleared) { cleared = true; hint && hint.classList.add("gone"); }
+    }
+    const move = e => wipe(e.clientX, e.clientY);
+    const leave = () => { last = null; };
+    hero.addEventListener('pointermove', move, { passive: true }); hero.addEventListener('pointerleave', leave); hero.addEventListener('pointerup', leave);
+    addEventListener('resize', size);
+    function draw() {
+      if (!alive) return; frostRAF = requestAnimationFrame(draw);
+      if (scrollY > innerHeight * 1.6) return;                       // за экраном — не рисуем
+      frame++;
+      // постепенно «замерзает» снова
+      if (frame % 4 === 0) { mctx.fillStyle = 'rgba(0,0,0,.009)'; mctx.fillRect(0, 0, W, H); }
+      // размытое видео: уменьшаем и растягиваем обратно
+      const ready = src && (src.tagName === 'IMG' ? src.complete : src.readyState >= 2);
+      ctx.globalCompositeOperation = 'source-over'; ctx.clearRect(0, 0, W, H);
+      if (ready) {
+        const sw = src.videoWidth || src.naturalWidth, sh = src.videoHeight || src.naturalHeight, ar = W / H, sa = sw / sh;
+        let cw = sw, ch = sh; if (sa > ar) cw = sh * ar; else ch = sw / ar;
+        tctx.drawImage(src, (sw - cw) / 2, (sh - ch) / 2, cw, ch, 0, 0, tiny.width, tiny.height);
+        ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'; ctx.drawImage(tiny, 0, 0, W, H);
+      } else { ctx.fillStyle = '#0b0d12'; ctx.fillRect(0, 0, W, H); }
+      ctx.fillStyle = 'rgba(214,230,246,.48)'; ctx.fillRect(0, 0, W, H);          // холодная белёсая дымка
+      const vg = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * .25, W / 2, H / 2, Math.max(W, H) * .75); vg.addColorStop(0, 'rgba(255,255,255,0)'); vg.addColorStop(1, 'rgba(235,245,255,.42)');
+      ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);                                // иней гуще к краям
+      ctx.globalAlpha = .55; ctx.fillStyle = pattern; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = 'destination-in'; ctx.drawImage(mask, 0, 0);  // стёртые места прозрачны
+      ctx.globalCompositeOperation = 'source-over';
+    }
+    draw();
+    frostCleanup = () => { alive = false; cancelAnimationFrame(frostRAF); hero.removeEventListener('pointermove', move); hero.removeEventListener('pointerleave', leave); removeEventListener('resize', size); };
+    // подсказка-анимация: сам «протирает» небольшую дугу, чтобы было понятно, что делать
+    if (!reduce) { let t = 0; const demo = setInterval(() => { t += .09; if (cleared || t > 3.2) { clearInterval(demo); last = null; return; } const r = hero.getBoundingClientRect(); wipe(r.left + r.width * (.3 + t * .12), r.top + r.height * (.55 + Math.sin(t * 2.2) * .12), true); }, 16); }
+  }
+
   function mount() {
-    kill(); render(); bind();
+    kill(); render(); bind(); initFrost();
     gsap.set('[data-reveal]', {});
     requestAnimationFrame(() => { animate(); ScrollTrigger.refresh(); });
   }
