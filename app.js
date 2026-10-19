@@ -153,7 +153,7 @@
     const mb = root.querySelector('.music-btn'), hint = mb.querySelector('.hint');
     const sync = on => mb.classList.toggle('on', on);
     window.Music.onchange = sync; sync(window.Music.on);
-    mb.onclick = () => { const turnOn = !window.Music.on; try { localStorage.setItem('toha-music', turnOn ? 'on' : 'off'); } catch (e) {} window.Music.toggle(); hint.classList.remove('show'); };
+    mb.onclick = () => { const turnOn = !window.Music.on && !window.Music.wanted; try { localStorage.setItem('toha-music', turnOn ? 'on' : 'off'); } catch (e) {} window.Music.toggle(); hint.classList.remove('show'); };
     if (!window.Music.on && !sessionStorage.getItem('toha-hint')) { setTimeout(() => hint.classList.add('show'), 2200); setTimeout(() => hint.classList.remove('show'), 7500); try { sessionStorage.setItem('toha-hint', 1); } catch (e) {} }
     // контакты
     const pop = root.querySelector('.contact-pop');
@@ -331,11 +331,20 @@
   addEventListener('resize', () => { placePill(); });
   addEventListener('load', () => ScrollTrigger.refresh());
 
-  // Музыка: браузеры разрешают звук только после жеста — включаем при первом касании, если пользователь не выключал
+  // Музыка: браузеры (особенно iOS) разрешают звук только после касания — включаем при первом настоящем тапе/клике,
+  // если пользователь сам её не выключал. Слушатели остаются, пока звук реально не пошёл.
   let pref = null; try { pref = localStorage.getItem('toha-music'); } catch (e) {}
   if (pref !== 'off') {
-    const go = e => { if (e.target.closest && e.target.closest('.music-btn')) { cleanup(); return; } window.Music.start(); cleanup(); };
-    const cleanup = () => ['pointerdown', 'keydown', 'touchend'].forEach(ev => removeEventListener(ev, go, true));
-    ['pointerdown', 'keydown', 'touchend'].forEach(ev => addEventListener(ev, go, true));
+    const evs = ['click', 'touchend', 'keydown'];
+    const cleanup = () => evs.forEach(ev => removeEventListener(ev, go, true));
+    function go(e) {
+      if (e.target.closest && e.target.closest('.music-btn')) return;
+      try { if (localStorage.getItem('toha-music') === 'off') { cleanup(); return; } } catch (err) {}
+      window.Music.start();
+      setTimeout(() => { if (window.Music.on) cleanup(); }, 2500);
+    }
+    evs.forEach(ev => addEventListener(ev, go, true));
+    // заранее готовим музыку, пока пользователь читает первый экран
+    setTimeout(() => { try { window.Music.prepare(); } catch (e) {} }, 3500);
   }
 })();
