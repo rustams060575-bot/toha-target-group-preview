@@ -127,8 +127,8 @@
     mouse.x += (mouse.tx - mouse.x) * .05; mouse.y += (mouse.ty - mouse.y) * .05;
     const fly = THREE.MathUtils.clamp((state.z - 1) / 3, 0, 1);
     const narrow = Math.min(1, camera.aspect / 1.2);       // на телефонах корона уходит ближе к центру и меньше
-    const s = state.s * (camera.aspect < 1 ? .62 : 1);
-    holder.position.set(state.x * halfW * (narrow < 1 ? .35 : 1) + mouse.x * .12, state.y * halfH * (camera.aspect < 1 ? .55 : 1) + (camera.aspect < 1 ? halfH * .74 * (1 - fly) : 0) - mouse.y * .08, state.z);
+    const s = state.s * (camera.aspect < 1 ? .62 - .2 * fly : 1);
+    holder.position.set(state.x * halfW * (narrow < 1 ? .35 : 1) + mouse.x * .12, state.y * halfH * (camera.aspect < 1 ? .55 : 1) + (camera.aspect < 1 ? halfH * .74 * (1 - THREE.MathUtils.clamp(state.z / 1.2, 0, 1)) : 0) - mouse.y * .08, state.z);
     holder.rotation.set(state.rx + mouse.y * .08, state.ry + idle, state.rz);
     holder.scale.setScalar(s);
     const o = THREE.MathUtils.clamp(state.o, 0, 1) * (camera.aspect < 1 ? .3 + .7 * fly : 1);

@@ -98,7 +98,7 @@
         <div class="wrap brand-in">
           <div class="logo-card" data-logo><img src="${A('logo-hd')}" alt="TOHA Target Group" loading="lazy"></div>
           <div class="giant" data-giant aria-hidden="true">${'TOHA'.split('').map(c => `<span>${c}</span>`).join('')}</div>
-          <p class="giant-sub" data-reveal>TARGET GROUP · ${esc(t.tagline)}</p>
+          <p class="giant-sub">TARGET GROUP · ${esc(t.tagline)}</p>
         </div></section>
 
       <section class="pad" id="services"><div class="wrap">
@@ -256,17 +256,42 @@
       .from('.show-text .l2 .w > span', { yPercent: 115, stagger: .08, ease: 'power3.out', duration: .5 }, .55)
       .from('.sectors span', { opacity: 0, y: 24, stagger: .08, duration: .4 }, .7);
 
+    // Бренд: TOHA «наезжает» на зрителя и растворяется, из центра выпрыгивает корона
+    if ($('.brand-sec')) {
+      const cv = document.getElementById('crown');
+      gsap.fromTo('.logo-card', { scale: .7, rotate: -6, y: 120, opacity: 0 }, { scale: 1, rotate: 0, y: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: '.brand-sec', start: 'top 90%', end: 'top 10%', scrub: 1 } });
+      gsap.set('.giant span', { transformPerspective: 700 });
+      gsap.from('.giant span', { yPercent: 120, opacity: 0, rotateX: -60, stagger: .12, duration: 1.4, ease: 'expo.out', scrollTrigger: { trigger: '.giant', start: 'top 95%', once: true } });
+      const bt = gsap.timeline({ scrollTrigger: { trigger: '.brand-sec', start: 'top top', end: '+=260%', scrub: .8, pin: true, anticipatePin: 1,
+        onUpdate: s => { if (cv) cv.style.zIndex = s.progress > .3 ? 6 : 1; }, onLeaveBack: () => { if (cv) cv.style.zIndex = 1; } } });
+      // 1) буквы летят на зрителя: каждая разлетается в свою сторону, увеличивается и растворяется в экране
+      bt.to('.giant', { z: 0, duration: .01 }, 0)
+        .to('.giant span', { z: 650, scale: 1.8, x: i => (i - 1.5) * (innerWidth * .32), y: i => (i % 2 ? -1 : 1) * innerHeight * .08, rotateY: i => (i - 1.5) * -22, ease: 'power3.in', duration: .5 }, .08)
+        .to('.giant span', { opacity: 0, filter: 'blur(26px)', ease: 'power2.in', duration: .22 }, .34)
+        .to('.logo-card', { scale: 2.6, z: 300, opacity: 0, filter: 'blur(14px)', ease: 'power3.in', duration: .45 }, .08)
+        .to('.giant-sub', { opacity: 0, y: 40, duration: .2 }, .05);
+      // 2) корона отступает вглубь и выпрыгивает из экрана
+      if (C) {
+        bt.to(C, { z: -18, o: 0, s: .5, ease: 'power2.in', duration: .22 }, 0)
+          .set(C, { x: 0, y: .04, ry: -2.4, rx: .55, rz: 0 }, .26)
+          .to(C, { o: 1, duration: .08, ease: 'none' }, .46)
+          .to(C, { z: 3.2, s: 1.2, ry: 4.4, rx: .12, ease: 'back.out(1.15)', duration: .54 }, .46);
+      }
+      // после блока корона снова уходит под контент
+      ScrollTrigger.create({ trigger: '#services', start: 'top 70%', onEnter: () => { if (cv) cv.style.zIndex = 1; }, onLeaveBack: () => { if (cv) cv.style.zIndex = 6; } });
+    }
+
     // Корона: сквозной полёт по секциям
     if (C) {
       const k = (sel, from, to, start, end) => gsap.fromTo(C, from, Object.assign({ ease: 'none', immediateRender: false, scrollTrigger: { trigger: sel, start, end, scrub: 1 } }, to));
       const base = { z: 0, rz: 0, rx: .15, o: 1 };
       k('.showcase', { x: -.6, y: .1, z: -18, s: 1, rx: .1, ry: -1, o: 0 }, { x: -.6, y: .1, z: -18, s: 1, rx: .1, ry: -1, o: 0 }, 'top bottom', 'bottom top');
       k('#about', { x: -.6, y: .1, z: -18, s: 1, rx: .1, ry: -1, o: 0 }, Object.assign({}, base, { x: -.8, y: .0, s: .8, ry: 1.2, o: 1 }), 'top 90%', 'top 15%');
-      k('#services', Object.assign({}, base, { x: -.8, y: 0, s: .8, ry: 1.2 }), Object.assign({}, base, { x: .8, y: .05, s: .7, ry: 3.4 }), 'top 85%', 'top 10%');
-      k('#process', Object.assign({}, base, { x: .8, y: .05, s: .7, ry: 3.4 }), Object.assign({}, base, { x: .8, y: -.35, s: .65, ry: 5.2, rx: .3 }), 'top 85%', 'top 10%');
-      k('#faq', Object.assign({}, base, { x: .8, y: -.35, s: .65, ry: 5.2, rx: .3 }), Object.assign({}, base, { x: .8, y: .3, s: .55, ry: 6.8, o: .7 }), 'top 85%', 'top 15%');
-      k('#forms', Object.assign({}, base, { x: .8, y: .3, s: .55, ry: 6.8, o: .7 }), Object.assign({}, base, { x: .88, y: .5, s: .4, ry: 8, o: .25 }), 'top 85%', 'top 20%');
-      k('#contact', Object.assign({}, base, { x: .88, y: .5, s: .4, ry: 8, o: .25 }), Object.assign({}, base, { x: 0, y: .62, z: -1, s: .95, ry: 10, rx: .2, o: 1 }), 'top 90%', 'top 30%');
+      k('#services', Object.assign({}, base, { x: 0, y: .04, z: 3.2, s: 1.2, ry: 4.4, rx: .12 }), Object.assign({}, base, { x: .8, y: .05, s: .7, ry: 6.4 }), 'top 75%', 'top 5%');
+      k('#process', Object.assign({}, base, { x: .8, y: .05, s: .7, ry: 6.4 }), Object.assign({}, base, { x: .8, y: -.35, s: .65, ry: 8.2, rx: .3 }), 'top 85%', 'top 10%');
+      k('#faq', Object.assign({}, base, { x: .8, y: -.35, s: .65, ry: 8.2, rx: .3 }), Object.assign({}, base, { x: .8, y: .3, s: .55, ry: 9.8, o: .7 }), 'top 85%', 'top 15%');
+      k('#forms', Object.assign({}, base, { x: .8, y: .3, s: .55, ry: 9.8, o: .7 }), Object.assign({}, base, { x: .88, y: .5, s: .4, ry: 11, o: .25 }), 'top 85%', 'top 20%');
+      k('#contact', Object.assign({}, base, { x: .88, y: .5, s: .4, ry: 11, o: .25 }), Object.assign({}, base, { x: 0, y: .62, z: -1, s: .95, ry: 13, rx: .2, o: 1 }), 'top 90%', 'top 30%');
     }
 
     // Параллакс фона-видео уже в heroTl; reveal-блоки
@@ -289,14 +314,6 @@
     const steps = $$('.step');
     steps.forEach((s, i) => { if (steps[i + 1]) gsap.to(s, { scale: .93, opacity: .45, ease: 'none', scrollTrigger: { trigger: steps[i + 1], start: 'top 75%', end: 'top 25%', scrub: true } }); });
 
-
-    // Бренд: логотип выезжает, буквы TOHA появляются по очереди
-    if ($('.brand-sec')) {
-      gsap.fromTo('.logo-card', { scale: .72, rotate: -6, y: 120, opacity: 0 }, { scale: 1, rotate: 0, y: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: '.brand-sec', start: 'top 85%', end: 'top 25%', scrub: 1 } });
-      gsap.fromTo('.logo-card', { yPercent: 0 }, { yPercent: -18, ease: 'none', scrollTrigger: { trigger: '.brand-sec', start: 'top 25%', end: 'bottom top', scrub: 1 } });
-      gsap.from('.giant span', { yPercent: 120, opacity: 0, rotateX: -60, stagger: .12, duration: 1.4, ease: 'expo.out', transformPerspective: 900, scrollTrigger: { trigger: '.giant', start: 'top 85%', once: true } });
-      gsap.fromTo('.giant', { scale: 1.12 }, { scale: .92, ease: 'none', scrollTrigger: { trigger: '.brand-sec', start: 'top bottom', end: 'bottom top', scrub: true } });
-    }
 
     // Подвал: логотип
     gsap.from('footer .logo', { scale: .4, opacity: 0, rotate: -40, duration: 1.4, ease: 'expo.out', scrollTrigger: { trigger: 'footer', start: 'top 80%', once: true } });
