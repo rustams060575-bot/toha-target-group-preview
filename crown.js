@@ -1,7 +1,7 @@
 /* 3D-корона из логотипа (замена «черепа» из референса): летит сквозь страницу вместе со скроллом */
 (function () {
   const canvas = document.getElementById('crown');
-  const state = { x: .72, y: -.1, z: 0, rx: .12, ry: .5, rz: 0, s: 1, o: 1 }; // x,y — доли полуширины/полувысоты экрана
+  const state = { x: .6, y: -.16, z: 0, rx: .12, ry: .5, rz: 0, s: 1, o: 1 }; // x,y — доли полуширины/полувысоты экрана
   const api = { state, ready: false };
   window.Crown = api;
   if (!window.THREE) return;
